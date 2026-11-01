@@ -26574,7 +26574,7 @@ Ayrıntılar: [docs/assembly.md](docs/assembly.md) (İngilizce).
 1. K11'i kapat ve fişini çek. Şeffaf üst kapağı çevirerek çıkar, üzerindeki RGB fanın kablosunu söküp fanı çıkar, alt kapağı aç. CPU fanı ve soğutucusu yerinde kalır.
 2. Her yuvanın içindeki 4 altıgen cebe birer M3 somun it. Sonra fanın fişini ve kablosunu arka duvarın altındaki kablo deliğinden geçir ve fanı 4 vidasıyla ızgaralı yüze vidala; fan artık somunların düşmesini engeller. Fanın üzerindeki ok K11'e baksın.
 3. K11'i yan yatır ve her açık yüzüne bir yuva oturt. Yakalar köşeleri kavrar.
-4. İki tutamağı, flanşları aşağıda olacak şekilde yuvaların üstüne koy.
+4. İki tutamağı, ayakları (flanşları) aşağıda olacak şekilde yuvaların üstüne koy; her tutamağın bir ayağı sol, bir ayağı sağ yuvaya basar. Tutamağın vidası yok: üst kapak vidalanınca ayaklarını altına sıkıştırır ([görsel](docs/assembly.md#5-top-handles-and-top-plate)).
 5. Üst kapağı tutamak direklerinin üzerinden geçir. Yuvaları hafifçe K11'e bastır ve 4 üst vidayı 2 mm alyanla somunlara sık. Kasayı ters çevir, alt kapağı da aynı şekilde vidala.
 6. Fanları yükseltici kabloyla K11'in arkasındaki USB portlarına tak.
 

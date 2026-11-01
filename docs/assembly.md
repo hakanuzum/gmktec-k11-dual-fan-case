@@ -41,7 +41,13 @@ Using the heat-set-insert holders instead: melt one insert into each of the four
 
 ## 5. Top: handles and top plate
 
-1. Stand the two handles on top of the holders, flanges down, one at the front and one at the back.
+The handles have no screws. Each post ends in a small flange that is wider than the hole in the top plate. The handle stands on the two holders, the plate goes over the posts, and when the plate is screwed down the flange is trapped between the plate and the holder, like a nail head under a board.
+
+| Order: holders, handle, top plate | Section: flange trapped under the plate |
+|---|---|
+| ![Handle between holders and top plate](images/handle-mount-exploded.png) | ![Section through a handle post](images/handle-mount-section.png) |
+
+1. Stand the two handles on top of the holders, flanges down, one at the front and one at the back. Each handle bridges both holders: one post on the left holder, one on the right.
 2. Lower the top plate over the four handle posts. The flanges drop into the pockets under the plate.
 3. Press both holders lightly against the K11 so the fans touch its faces.
 4. Drive the 4 top screws with the 2 mm hex key into the nuts. The channels are slotted, so the screws find their nuts whatever the K11 thickness. Stop as soon as the heads sit flush.

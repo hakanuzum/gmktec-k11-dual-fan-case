@@ -26543,7 +26543,7 @@ Step-by-step with notes: [docs/assembly.md](docs/assembly.md).
 1. Shut down and unplug the K11. Twist off the clear top cover, unplug and remove its RGB fan, then remove the bottom cover. Keep the CPU blower and heatsink installed.
 2. Push an M3 nut into each of the four hex pockets inside each holder. Then thread the fan cable through the cable hole low on the rear wall and screw the fan to the grille face with its 4 fan screws (the fan now keeps the nuts in). The arrow on the fan points towards the K11.
 3. Stand the K11 on its side and fit a holder on each open face. The collars grip the corners.
-4. Put the two handles on top of the holders, flanges down.
+4. Put the two handles on top of the holders, flanges down. They have no screws: the top plate traps their flanges ([picture](docs/assembly.md#5-top-handles-and-top-plate)).
 5. Lower the top plate over the handle posts. Press the holders lightly against the K11 and tighten the 4 top screws with a 2 mm hex key. Turn the case over and fit the bottom plate the same way.
 6. Plug the fans into the USB ports on the back of the K11 through the step-up cable.
 
