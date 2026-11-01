@@ -28,10 +28,9 @@ PRINT_FILES = {  # view name in the SCAD -> file in stl/
     "fan_holder_left": "fan_holder_left.stl",
     "top_plate": "top_plate.stl",
     "bottom_plate": "bottom_plate.stl",
-    "handle": "handle.stl",
 }
 VIEWER_PARTS = [
-    "holder_right", "holder_left", "top_plate", "bottom_plate", "handle_front", "handle_rear",
+    "holder_right", "holder_left", "top_plate", "bottom_plate",
     "v_k11_shell", "v_k11_pcb", "v_k11_cpu", "v_k11_ram", "v_k11_ports", "v_k11_usb", "v_k11_led",
     "v_fan_right_frame", "v_fan_right_rotor", "v_fan_right_pads",
     "v_fan_left_frame", "v_fan_left_rotor", "v_fan_left_pads",
@@ -39,7 +38,7 @@ VIEWER_PARTS = [
     "v_fan_screws_right", "v_fan_screws_left",
     "v_anchors_top_right", "v_anchors_top_left", "v_anchors_bottom_right", "v_anchors_bottom_left",
 ]
-README_PARTS = ["holder_right", "holder_left", "top_plate", "bottom_plate", "handle_front", "handle_rear", "k11"]
+README_PARTS = ["holder_right", "holder_left", "top_plate", "bottom_plate", "k11"]
 IMAGES = {  # file -> (OpenSCAD defines, camera "tx,ty,tz,rx,ry,rz,dist", size)
     "hero.png": ({}, "0,0,95,62,0,35,600", "1600,1200"),
     "exploded.png": ({"explode": 50}, "0,0,95,62,0,35,760", "1600,1200"),
@@ -48,6 +47,7 @@ IMAGES = {  # file -> (OpenSCAD defines, camera "tx,ty,tz,rx,ry,rz,dist", size)
     "section.png": ({"section_cut": "true"}, "0,0,90,75,0,330,430", "1600,1200"),
     "holder-inside.png": ({"view": "fan_holder_right"}, "0,0,10,35,0,20,330", "1400,1100"),
     "print-layout.png": ({"view": "print_layout"}, "125,62,0,38,0,0,660", "1600,1000"),
+    "top-plate.png": ({"view": "top_plate"}, "0,0,14,58,0,25,260", "1400,1000"),
 }
 
 

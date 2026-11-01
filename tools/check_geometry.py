@@ -10,8 +10,11 @@ and checks, for several K11 thicknesses and both fan thicknesses:
   * nut pockets: the M3 nut fits, cannot turn, has plastic above it and the screw reaches through it
   * insert / self-tap variants: enough plastic around the hole
   * every fan screw passes freely through the face
-  * the handle flanges sit on top of the holders
+  * assembly paths: every part reaches its place along a straight line without hitting anything
+    (holders slide onto the K11 sideways, plates drop on from above/below, nuts slide into their
+    pockets, fans go into the holders from the K11 side)
   * every print-ready part is a single watertight solid that fits a 180 mm bed
+  * printability: no overhang steeper than 45° except short flat bridges (handle bar, holder seat frame)
 
 Usage:  python tools/check_geometry.py            (exit code 1 on any failure)
 """
@@ -31,9 +34,10 @@ TOL = 0.5  # mm^3 numerical noise allowance
 FACE, PLATE_T, HZ, FOOT_H, SCREW_Y = 2.4, 3.0, 71, 10, 47
 NUT_AF, NUT_T, NUT_TOP, SCREW_LEN = 5.5, 2.4, 3.6, 10.0
 ZC = FOOT_H + PLATE_T + HZ
-ASSEMBLY = ["holder_right", "holder_left", "top_plate", "bottom_plate", "handle_front", "handle_rear"]
+ASSEMBLY = ["holder_right", "holder_left", "top_plate", "bottom_plate"]
 OBSTACLES = ["k11", "fan_right", "fan_left", "front_zone", "rear_zone"]
-PRINT_PARTS = ["fan_holder_right", "fan_holder_left", "top_plate", "bottom_plate", "handle"]
+PRINT_PARTS = ["fan_holder_right", "fan_holder_left", "top_plate", "bottom_plate"]
+HANDLE_GAP, HANDLE_BRIDGE = 22, 40
 
 failures = []
 
@@ -69,17 +73,13 @@ def check_assembly(tmp, k11_t, fan_t, anchor="nut"):
             v = (P[part] ^ P[obs]).volume()
             check(v < TOL, f"{part:13s} x {obs:10s} intersection {v:7.3f} mm3")
     pairs = [("holder_right", "holder_left"), ("holder_right", "top_plate"), ("holder_left", "top_plate"),
-             ("holder_right", "bottom_plate"), ("holder_left", "bottom_plate"),
-             ("handle_front", "top_plate"), ("handle_rear", "top_plate")]
-    pairs += [(h, c) for h in ("handle_front", "handle_rear") for c in ("holder_right", "holder_left")]
+             ("holder_right", "bottom_plate"), ("holder_left", "bottom_plate")]
     for a, b in pairs:
         v = (P[a] ^ P[b]).volume()
         check(v < TOL, f"{a} x {b} overlap {v:.3f} mm3")
 
     top, holder = P["top_plate"].bounding_box(), P["holder_right"].bounding_box()
     check(abs(top[2] - holder[5]) < 0.01, f"top plate rests on the holders (z {top[2]:.2f} / {holder[5]:.2f})")
-    for h in ("handle_front", "handle_rear"):
-        check(abs(P[h].bounding_box()[2] - (ZC + HZ)) < 0.01, f"{h} flange sits on the holder top")
 
     xs = k11_t / 2 + 8.8
     for sx in (-1, 1):
@@ -98,9 +98,9 @@ def check_assembly(tmp, k11_t, fan_t, anchor="nut"):
                 where = f"({sx:+d},{sy:+d},{'top' if sz > 0 else 'bottom'})"
                 if anchor == "nut":
                     lo, hi = zr(NUT_TOP, NUT_TOP + NUT_T)
-                    nut = Manifold.cylinder(hi - lo, NUT_AF / 2 / np.cos(np.pi / 6), NUT_AF / 2 / np.cos(np.pi / 6), 6).translate((sx * xs, sy * SCREW_Y, lo))
+                    nut = Manifold.cylinder(hi - lo, NUT_AF / 2 / np.cos(np.pi / 6), NUT_AF / 2 / np.cos(np.pi / 6), 6).rotate((0, 0, 30)).translate((sx * xs, sy * SCREW_Y, lo))
                     check((nut ^ cup).volume() < TOL, f"nut {where} fits its pocket")
-                    turned = Manifold.cylinder(hi - lo, NUT_AF / 2 / np.cos(np.pi / 6), NUT_AF / 2 / np.cos(np.pi / 6), 6).rotate((0, 0, 30)).translate((sx * xs, sy * SCREW_Y, lo))
+                    turned = Manifold.cylinder(hi - lo, NUT_AF / 2 / np.cos(np.pi / 6), NUT_AF / 2 / np.cos(np.pi / 6), 6).translate((sx * xs, sy * SCREW_Y, lo))
                     check((turned ^ cup).volume() > 1.0, f"nut {where} cannot turn in its pocket")
                     lo2, hi2 = zr(0.2, NUT_TOP - 0.2)
                     ring = cyl(sx * xs, sy * SCREW_Y, lo2, hi2, 7.0) - cyl(sx * xs, sy * SCREW_Y, lo2 - 1, hi2 + 1, 3.6)
@@ -124,8 +124,64 @@ def check_assembly(tmp, k11_t, fan_t, anchor="nut"):
                 v = (rod ^ P[cup]).volume()
                 check(v < TOL, f"fan screw {cup} ({a:+d},{b:+d}) passes the face, contact {v:.3f} mm3")
 
+    # ---- assembly paths: slide every part along a straight line in 1 mm steps ----
+    def path_clear(moving, fixed, direction, length):
+        for i in range(0, length + 1):
+            m = moving.translate(tuple(i * c for c in direction))
+            if (m ^ fixed).volume() > TOL:
+                return i
+        return None
+    k11 = P["k11"]
+    for side, name in ((1, "holder_right"), (-1, "holder_left")):
+        hit = path_clear(P[name], k11, (side, 0, 0), 45)
+        check(hit is None, f"assembly path: {name} slides on/off the K11 sideways" + ("" if hit is None else f" (blocked at {hit} mm)"))
+        fan = P["fan_right" if side > 0 else "fan_left"]
+        hit = path_clear(fan, P[name], (-side, 0, 0), 30)
+        check(hit is None, f"assembly path: fan goes into {name} from the K11 side" + ("" if hit is None else f" (blocked at {hit} mm)"))
+    holders_k11 = P["holder_right"] + P["holder_left"] + k11
+    hit = path_clear(P["top_plate"], holders_k11, (0, 0, 1), 60)
+    check(hit is None, "assembly path: top plate (with handles) lifts straight off" + ("" if hit is None else f" (blocked at {hit} mm)"))
+    hit = path_clear(P["bottom_plate"], holders_k11, (0, 0, -1), 60)
+    check(hit is None, "assembly path: bottom plate drops straight off" + ("" if hit is None else f" (blocked at {hit} mm)"))
+    if anchor == "nut":
+        r_hex = NUT_AF / 2 / np.cos(np.pi / 6)
+        for sx in (-1, 1):
+            cup = P["holder_right"] if sx > 0 else P["holder_left"]
+            for sy in (-1, 1):
+                for sz in (1, -1):
+                    z0 = ZC + sz * HZ - sz * (NUT_TOP + NUT_T) if sz > 0 else ZC + sz * HZ - sz * NUT_TOP
+                    nut = Manifold.cylinder(NUT_T, r_hex, r_hex, 6).rotate((0, 0, 30)).translate((sx * xs, sy * SCREW_Y, z0))
+                    hit = path_clear(nut, cup, (0, 0, -sz), 9)
+                    check(hit is None, f"assembly path: nut ({sx:+d},{sy:+d},{'top' if sz > 0 else 'bottom'}) slides out of its pocket towards the fan opening")
+
     print(f"  info  outer width {P['holder_right'].bounding_box()[3] * 2:.1f} mm, "
           f"K11 sits {P['k11'].bounding_box()[2]:.1f} mm above the desk")
+
+
+def overhang_report(mesh, layer=0.2):
+    """Slice the part every `layer` mm. Whatever on layer n does not stand on layer n-1
+    (grown by one layer height, i.e. a 45° overhang) is unsupported. Return how far the
+    support has to grow to cover it: a bridge of length L needs L/2, a ledge of length L needs L."""
+    m = Manifold(Mesh(vert_properties=np.asarray(mesh.vertices, np.float32), tri_verts=np.asarray(mesh.faces, np.uint32)))
+    worst, worst_z = 0.0, 0.0
+    zmax = mesh.bounds[1][2]
+    below = m.slice(0.1)
+    z = 0.1 + layer
+    while z < zmax - 0.05:
+        cur = m.slice(z)
+        if (cur - below.offset(layer)).area() > 0.05:
+            lo, hi = 0.0, 80.0
+            while hi - lo > 0.1:
+                mid = (lo + hi) / 2
+                if (cur - below.offset(layer + mid)).area() > 0.05:
+                    lo = mid
+                else:
+                    hi = mid
+            if hi > worst:
+                worst, worst_z = hi, z
+        below = cur
+        z += layer
+    return worst, worst_z
 
 
 def check_print_parts(tmp, fan_t, anchor="nut"):
@@ -139,6 +195,10 @@ def check_print_parts(tmp, fan_t, anchor="nut"):
         check(len(m.decompose()) == 1, f"{view}: single body")
         check(max(ext[:2]) <= 180 and ext[2] <= 180, f"{view}: {ext[0]:.1f} x {ext[1]:.1f} x {ext[2]:.1f} mm fits a 180 mm bed")
         check(abs(t.bounds[0][2]) < 1e-3, f"{view}: lies on the bed")
+        # layer by layer: anything not standing on the layer below (45° allowed) must be a short bridge
+        worst, worst_z = overhang_report(t)
+        limit = HANDLE_BRIDGE / 2 + 0.6 if view == "top_plate" else 2.0
+        check(worst <= limit, f"{view}: printable without supports (largest unsupported reach {worst:.1f} mm at z={worst_z:.1f}; limit {limit:.1f})")
         print(f"  info  {view}: {t.volume / 1000:.1f} cm3 solid volume")
 
 

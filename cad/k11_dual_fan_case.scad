@@ -7,9 +7,8 @@
 //
 //  Printed parts (all fit a 180 x 180 mm bed):
 //    fan_holder_right, fan_holder_left  1 each (mirrored so the cable hole sits low at the rear)
-//    top_plate                          1
+//    top_plate                          1 (with the two carry handles, one piece)
 //    bottom_plate                       1 (with feet)
-//    handle                             2 (screwless; the flange is clamped between top plate and holders)
 //  Hardware: 8 x M3x10 countersunk hex socket screws (DIN 7991), no washers,
 //            + 8 x M3 hex nuts (DIN 934) pressed into pockets in the fan holders
 //            (or 8 x M3 heat-set inserts, see screw_anchor). Fan screws come with the fans.
@@ -22,7 +21,7 @@
 
 /* [View] */
 // What to show
-view = "assembly"; // [assembly:Assembly (colour), fan_holder_right:Fan holder right, fan_holder_left:Fan holder left, top_plate:Top plate, bottom_plate:Bottom plate (feet), handle:Handle (print 2), print_layout:All printed parts]
+view = "assembly"; // [assembly:Assembly (colour), fan_holder_right:Fan holder right, fan_holder_left:Fan holder left, top_plate:Top plate (with handles), bottom_plate:Bottom plate (feet), print_layout:All printed parts]
 // Exploded view distance
 explode = 0; // [0:1:80]
 // Cut the assembly in half to see inside
@@ -35,7 +34,7 @@ case_color = "black"; // [black:Black, space_grey:Space grey, white:White]
 show_device = true;
 
 /* [Parts] */
-// Two carry handles on top
+// Two carry handles, printed as part of the top plate
 handles = true;
 // Fan thickness: standard 120 mm fans are 25 mm, slim fans 15 mm
 fan_thickness = 25; // [25:25 mm (standard), 15:15 mm (slim)]
@@ -74,6 +73,8 @@ outer_r  = 8;                     // outer corner radius
 chamfer  = 2;                     // outer face edge chamfer
 shell    = 2.4;                   // holder outer wall (6 lines with a 0.4 mm nozzle)
 seat_frame = 2.4;                 // frame the K11 rests against
+function cavity_top() = seat - 1.2;                         // cavity ends 1.2 mm below the seat at the fan opening
+function roof_run() = (2*hz - 2*shell - fan_pocket)/2;      // widest horizontal run of the 45° roof (8.1 mm)
 
 // fan face: centre cap + radial fins
 grille_d = 116;                   // opening diameter (fan blade diameter ~114)
@@ -103,15 +104,14 @@ slot_len = screw_x(T_max) - screw_x(T_min);
 csk_d    = 6.4;                   // DIN 7991 M3 head 6.0 + 0.4 clearance, 90° countersink
 foot_h = 10;  foot_x = 35;  foot_y = 62;
 
-// handle: oval tube, screwless
-handle_y = 57.5;                  // front/rear position
-handle_x = 32;                    // post axis (x)
-handle_d = 12;                    // tube diameter
-handle_t = 8;                     // flattened to 12 x 8 oval (prints flat without supports)
-handle_h = 30;                    // top tube axis height above the plate
-handle_r = 10;                    // bend radius (axis)
-flange_w = 14;  flange_t = 2;     // flange at the post foot, clamped by the plate
-boss_h   = 4;                     // oval boss on the plate where the post comes out
+// handles: one piece with the top plate, sized for four fingers, printable without supports
+handle_y  = 57.5;                 // front/rear position (centre of the handle)
+handle_w  = 70;                   // finger opening width at the base
+handle_gap = 22;                  // finger opening height
+handle_bridge = 40;               // flat span under the bar; the rest of the opening top is 45° (self-supporting)
+handle_wall = 6;                  // post width and bar thickness
+handle_t  = 8;                    // handle thickness (front to back)
+handle_edge = 1;                  // 45° chamfer on the front/back edges
 
 zc = foot_h + plate_t + hz;       // K11 centre height above the desk
 
@@ -148,8 +148,13 @@ module fan_holder(hole_side=-1) {   // hole_side: print-X side of the cable hole
                     linear_extrude(0.01) rrect(2*hz - 2*chamfer, 2*hy - 2*chamfer, outer_r - chamfer);
                     translate([0, 0, chamfer]) linear_extrude(seat - chamfer) rrect(2*hz, 2*hy, outer_r);
                 }
-                translate([0, 0, face]) linear_extrude(seat - face - seat_frame)
-                    rrect(2*hz - 2*shell, 2*hy - 2*shell, outer_r - shell);
+                // cavity; its top narrows at 45° to the fan opening, so the seat frame
+                // is self-supporting in print instead of an 8 mm ledge over empty space
+                hull() {
+                    translate([0, 0, face]) linear_extrude(cavity_top() - roof_run() - face)
+                        rrect(2*hz - 2*shell, 2*hy - 2*shell, outer_r - shell);
+                    translate([0, 0, cavity_top() - 0.01]) linear_extrude(0.01) square(fan_pocket, center=true);
+                }
             }
             // plate screw blocks (vertical columns in print, no supports)
             for (s=[-1, 1], sy=[-1, 1]) translate([s*(hz - block_w/2), sy*screw_y, face - 0.01])
@@ -178,7 +183,7 @@ module fan_holder(hole_side=-1) {   // hole_side: print-X side of the cable hole
         // what the plate screws thread into (top and bottom blocks)
         if (!lowpoly) for (s=[-1, 1], sy=[-1, 1]) translate([0, sy*screw_y, screw_u]) mirror([s > 0 ? 0 : 1, 0, 0]) screw_anchor_cut();
         // fan cable hole: rear wall, low; USB-C-like 13 x 7.5 mm, a 4-pin fan plug passes through
-        translate([hole_side*45, hy - shell - 1, 0]) rotate([-90, 0, 0]) linear_extrude(shell + 2)
+        translate([hole_side*45, fan_pocket/2 - 1.5, 0]) rotate([-90, 0, 0]) linear_extrude(hy - fan_pocket/2 + 2.5)
             translate([0, -(face + seat)/2]) rotate(90) slot2d(5.5, 7.5);
     }
 }
@@ -189,8 +194,8 @@ module screw_anchor_cut() {
         // clearance hole from the nut up to the top of the holder
         translate([hz - nut_top - 0.01, 0, 0]) rotate([0, 90, 0]) cylinder(h=nut_top + 1, d=3.4, $fn=fq(24));
         // hex pocket, open towards the fan opening; the nut is pushed in before the fan is fitted
-        // and the fan frame then keeps it from falling out. Corners point up/down in print: no supports.
-        translate([hz - block_w - 0.5, 0, 0]) rotate([0, 90, 0]) cylinder(h=block_w - nut_top + 0.5, d=nut_af/cos(30), $fn=6);
+        // and the fan frame then keeps it from falling out. Flats are up/down in print: the roof is a 3.3 mm bridge.
+        translate([hz - block_w - 0.5, 0, 0]) rotate([0, 90, 0]) rotate([0, 0, 30]) cylinder(h=block_w - nut_top + 0.5, d=nut_af/cos(30), $fn=6);
     } else if (screw_anchor == "insert") {
         translate([hz - insert_depth, 0, 0]) rotate([0, 90, 0]) cylinder(h=insert_depth + 1, d=insert_d, $fn=fq(32));
         translate([hz - pilot_depth - 1.5, 0, 0]) rotate([0, 90, 0]) cylinder(h=pilot_depth + 2, d=3.0, $fn=fq(24));
@@ -216,10 +221,9 @@ module plate(with_feet=false) {
                     translate([0, 0, 4]) cylinder(h=4, d1=8, d2=16);
                     translate([0, 0, 8]) cylinder(h=foot_h - 8, d=16);
                 }
-            // oval bosses where the handle posts come out
+            // carry handles, part of the plate
             if (!with_feet && handles)
-                for (sx=[-1, 1], sy=[-1, 1]) translate([sx*handle_x, sy*handle_y, plate_t - 0.01])
-                    linear_extrude(boss_h + 0.01) slot2d(9, 11);   // 20 x 11 oval
+                for (sy=[-1, 1]) translate([0, sy*handle_y, plate_t]) handle_solid();
         }
         // slotted screw channels, countersunk 90° along their full length
         // (a countersunk head sits flush wherever it lands in the slot)
@@ -231,37 +235,34 @@ module plate(with_feet=false) {
         // vent slots (right above the K11 top/bottom vents)
         for (i=[-3:3])
             translate([i*5.5, 0, -1]) linear_extrude(plate_t + 2) rotate(90) slot2d(100, 3);
-        // handle post hole (oval) + flange pocket underneath
-        if (!with_feet && handles)
-            for (sx=[-1, 1], sy=[-1, 1]) translate([sx*handle_x, sy*handle_y, 0]) {
-                translate([0, 0, -1]) linear_extrude(plate_t + boss_h + 2)
-                    intersection() { circle(d=handle_d + 0.6, $fn=fq(48)); square([handle_d + 2, handle_t + 0.6], center=true); }
-                translate([-(flange_w + 0.6)/2, -(handle_t + 0.6)/2, -1]) cube([flange_w + 0.6, handle_t + 0.6, flange_t + 1.1]);
-            }
     }
 }
 
 // =====================================================================
-//  HANDLE  (print orientation: lying flat. X = assembly X,
-//           Y = assembly up (Y=0 is the top face of the plate), Z = thickness)
+//  HANDLE  (part of the top plate; local X across the case, Z up from the plate top,
+//           extruded along Y). Prints standing up with the plate on the bed:
+//           posts are vertical, the opening top is 45° on both sides with a short
+//           flat bridge in the middle, so no supports are needed.
 // =====================================================================
-module handle() {
-    r = handle_d/2;  y1 = handle_h - handle_r;  xb = handle_x - handle_r;
+module handle_opening_2d() {
+    xi = handle_w/2;  b = handle_bridge/2;  zt = handle_gap;  zs = zt - (xi - b);   // 45°: rise = run
+    g = 3;   // 45° fillet where the posts meet the plate
+    polygon([[-xi + g, -3], [xi - g, -3], [xi, -3 + g], [xi, zs], [b, zt], [-b, zt], [-xi, zs], [-xi, -3 + g]]);
+}
+module handle_profile_2d() difference() {
     intersection() {
-        union() {
-            for (m=[0, 1]) mirror([m, 0, 0]) {
-                // post: from below the flange up to the bend
-                translate([handle_x, -plate_t, 0]) rotate([-90, 0, 0]) cylinder(h=y1 + plate_t, r=r, $fn=fq(48));
-                // bend
-                translate([xb, y1, 0]) rotate_extrude(angle=90, $fn=fq(64)) translate([handle_r, 0]) circle(r=r, $fn=fq(48));
-                // flange: clamped between plate and holder
-                translate([handle_x - flange_w/2, -plate_t, -handle_t/2]) cube([flange_w, flange_t, handle_t]);
-            }
-            // top tube
-            translate([-xb, handle_h, 0]) rotate([0, 90, 0]) cylinder(h=2*xb, r=r, $fn=fq(48));
-        }
-        // flattened on two sides: 12 x 8 oval, prints flat without supports
-        translate([-100, -plate_t, -handle_t/2]) cube([200, 100, handle_t]);
+        offset(r=handle_wall, $fn=fq(48)) handle_opening_2d();
+        translate([-100, -2]) square([200, 100]);
+    }
+    handle_opening_2d();
+}
+module handle_solid() {
+    c = handle_edge;
+    // octahedron Minkowski: 45° chamfers on the front/back edges (stay printable)
+    minkowski() {
+        rotate([90, 0, 0]) linear_extrude(handle_t - 2*c, center=true) offset(delta=-c) handle_profile_2d();
+        polyhedron([[c,0,0],[-c,0,0],[0,c,0],[0,-c,0],[0,0,c],[0,0,-c]],
+                   [[0,2,4],[2,1,4],[1,3,4],[3,0,4],[2,0,5],[1,2,5],[3,1,5],[0,3,5]]);
     }
 }
 
@@ -363,7 +364,6 @@ module holder_right(e=0) translate([T/2 + seat + e, 0, zc]) rotate([0, -90, 0]) 
 module holder_left(e=0) translate([0, 0, zc]) rotate([0, 180, 0]) translate([T/2 + seat + e, 0, 0]) rotate([0, -90, 0]) fan_holder(1);
 module top(e=0) translate([0, 0, zc + hz + e]) plate(false);
 module bottom(e=0) translate([0, 0, zc - hz - e]) mirror([0, 0, 1]) plate(true);
-module handle_at(sy, e=0) translate([0, sy*handle_y, zc + hz + plate_t + e]) rotate([90, 0, 0]) handle();
 module fan_right(e=0) translate([T/2 + seat - face - fan_depth + 0.6 + e, 0, zc]) rotate([0, 90, 0]) fan120();
 module fan_left(e=0) mirror([1, 0, 0]) fan_right(e);
 // fan screws: from the holder's outer face inwards (right side)
@@ -383,7 +383,6 @@ module assembly() {
     e = explode;
     color(case_rgb) {
         holder_right(e); holder_left(e); top(e*1.2); bottom(e*0.6);
-        if (handles) for (sy=[-1, 1]) handle_at(sy, e*1.6);
     }
     for (sx=[-1, 1]) translate([0, 0, e*1.2]) plate_screws(true, sx);
     for (sx=[-1, 1]) translate([0, 0, -e*0.6]) plate_screws(false, sx);
@@ -407,8 +406,6 @@ module export_parts() {
     if (export_part == "holder_left") holder_left();
     if (export_part == "top_plate") top();
     if (export_part == "bottom_plate") bottom();
-    if (export_part == "handle_front") handle_at(-1);
-    if (export_part == "handle_rear") handle_at(1);
     if (export_part == "k11") translate([0, 0, zc]) k11_body();
     if (export_part == "fan_right") fan_box();
     if (export_part == "fan_left") mirror([1, 0, 0]) fan_box();
@@ -443,11 +440,9 @@ else if (view == "fan_holder_right") color(case_rgb) fan_holder(-1);
 else if (view == "fan_holder_left") color(case_rgb) fan_holder(1);
 else if (view == "top_plate") color(case_rgb) plate(false);
 else if (view == "bottom_plate") color(case_rgb) plate(true);
-else if (view == "handle") color(case_rgb) translate([0, plate_t, handle_t/2]) handle();
 else if (view == "print_layout") color(case_rgb) {
     fan_holder(-1);
     translate([0, 2*hy + 10, 0]) fan_holder(1);
     translate([hz + 10 + plate_w/2, 0, 0]) plate(false);
     translate([hz + 20 + plate_w*1.5, 0, 0]) plate(true);
-    for (i=[0, 1]) translate([hz + 30 + plate_w*2 + handle_h, -40 + i*80, handle_t/2]) rotate(90) translate([0, plate_t, 0]) handle();
 }

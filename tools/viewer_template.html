@@ -176,7 +176,7 @@ button.primary:hover { filter: brightness(1.08); }
     <span class="sub">GMKtec K11 · 2 × 120 mm USB fans · no soldering · 2 mm hex key + Phillips screwdriver</span>
     <div class="dims" aria-label="Outer dimensions">
       <span><b>W</b><span id="dimW">100.0</span> mm</span>
-      <span title="With handles; 158.0 mm without"><b>H</b>194.0 mm</span>
+      <span title="With handles; 158.0 mm without"><b>H</b>186.0 mm</span>
       <span><b>D</b>139.0 mm</span>
     </div>
   </header>
@@ -272,7 +272,7 @@ button.primary:hover { filter: brightness(1.08); }
       <ul class="buy">
         <li>2 × 120 mm fans, 25 mm thick. Example: Noctua NF-F12 PWM (12 V, 4-pin). Any standard 120 mm fan fits; the hole spacing is always 105 mm.</li>
         <li>USB 5 V→12 V step-up fan cable (USB-A male → 4-pin fan, e.g. Akasa AK-CBFA10-60BK). It must say "5V→12V" or "step-up"; a plain USB fan cable gives 5 V and will not spin a 12 V fan. An NF-F12 draws at most 0.05 A; the Y-cable in the fan box lets two fans share one cable.</li>
-        <li>8 × M3×10 countersunk hex socket screws (DIN 7991), black. No washers; tightened with a 2 mm hex key. The handles need no screws.</li>
+        <li>8 × M3×10 countersunk hex socket screws (DIN 7991), black. No washers; tightened with a 2 mm hex key. The handles are part of the top plate.</li>
         <li>Black PETG filament. PLA can soften in the warm air leaving the rear.</li>
       </ul>
       <p class="note">USB carries no PWM signal, so the fan runs at full speed (NF-F12: 1500 rpm, 22.4 dB(A)). For less noise, put the Low-Noise Adaptor (L.N.A.) from the fan box in line.</p>
@@ -281,7 +281,9 @@ button.primary:hover { filter: brightness(1.08); }
     <section aria-labelledby="h-check">
       <h2 id="h-check">Automated checks</h2>
       <div class="check"><b>✓</b><span>At a K11 thickness of 32, 44 and 56 mm: no case part or handle intersects the K11 body or the fans; the front and rear port zones are completely clear.</span></div>
-      <div class="check"><b>✓</b><span>All 8 countersunk plate screws and 8 fan screws line up with their holes at every thickness; the handle flanges sit on the holders.</span></div>
+      <div class="check"><b>✓</b><span>All 8 countersunk plate screws and 8 fan screws line up with their holes at every thickness; each M3 nut fits its pocket and cannot turn.</span></div>
+      <div class="check"><b>✓</b><span>Assembly paths: every part reaches its place along a straight line without hitting anything (holders, plates, fans, nuts).</span></div>
+      <div class="check"><b>✓</b><span>Printable without supports: checked layer by layer; the only bridges are 40 mm under each handle bar and 3.3 mm over the nut pockets.</span></div>
       <div class="check"><b>✓</b><span>The same checks pass with the 15 mm slim-fan setting.</span></div>
       <div class="check"><b>✓</b><span>Every printed part is a single watertight solid; the largest is 142 × 139 × 34 mm and fits a 180 mm bed.</span></div>
       <p class="foot">Collar and fan-pocket dimensions come from <a href="https://github.com/orenaksakal/gmktec-k11-noctua-mod" target="_blank" rel="noopener">orenaksakal/gmktec-k11-noctua-mod</a>, where they were fit-tested on a real K11. The K11 is a stand-in model; port positions are approximate. Source: <a href="https://github.com/hakanuzum/gmktec-k11-dual-fan-case" target="_blank" rel="noopener">github.com/hakanuzum/gmktec-k11-dual-fan-case</a></p>

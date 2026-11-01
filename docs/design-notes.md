@@ -14,11 +14,11 @@
 
 ## How it is put together
 
-- **Two fan holders** press the fans against the two open faces of the K11 and grip its corners with a 6 mm collar. They are hollow shells: 2.4 mm outer wall, 2.4 mm grille face, 2.4 mm seat frame, plus four solid blocks for the plate screws.
+- **Two fan holders** press the fans against the two open faces of the K11 and grip its corners with a 6 mm collar. They are hollow shells: 2.4 mm outer wall and grille face, plus four solid blocks for the plate screws. The cavity's roof slopes at 45° up to the seat frame, so the frame the K11 rests on prints without supports.
 - **Top and bottom plates** tie the holders together. Each plate has four slotted, countersunk channels. Because the slots are 12 mm long, the screw can land anywhere in a 24 mm range of K11 thickness (32–56 mm).
 - **An 8 mm air gap** (plenum) sits between the K11's vented top/bottom sides and each plate. The plates have seven vent slots over it, and the gap is open at the front and back.
 - **Screw anchors.** The plate screws thread into metal, not plastic: by default an M3 hex nut pressed into a hex pocket in each corner block (pocket open towards the fan opening, 3.6 mm of plastic above the nut, corners pointing up and down in print so it needs no support). `screw_anchor = "insert"` gives 4.0 mm holes for heat-set inserts; `"self_tap"` gives 2.6 mm pilot holes.
-- **Handles** are clamped, not screwed: their flanges sit on the holders and the top plate holds them down.
+- **Handles** are part of the top plate: a 70 × 22 mm finger opening, 6 mm posts and bar, 8 mm thick with chamfered edges. The top of the opening slopes at 45° on both sides with a 40 mm flat bridge, so they print upright without supports.
 - **Fans** are screwed to the grille face with their own screws, so they cannot fall out during assembly and no tight pocket is needed.
 
 ## Coordinate system (assembly)
@@ -37,7 +37,8 @@ Holder print coordinates: outer face on the bed (Z = 0, pointing inwards), print
 | Holder depth including collar | 34.0 |
 | Holder outline | 142 × 139 |
 | Case width | T + 56 (100 for T = 44) |
-| Height | 158 without handles, 194 with |
+| Height | 158 without handles, 186 with |
+| Handle opening | 70 × 22 (40 flat under the bar) |
 | K11 above the desk | 21.5 |
 | Plate screw position | X = ±(T/2 + 8.8), Y = ±47 |
 | Fan screw square | 105 |
@@ -47,7 +48,7 @@ Holder print coordinates: outer face on the bed (Z = 0, pointing inwards), print
 
 ## Known limits
 
-- Not yet printed and fitted on a real K11. The checks are geometric checks against a stand-in model.
+- Not yet printed and fitted on a real K11. The checks are geometric checks against a stand-in model, plus straight-line assembly paths and a layer-by-layer overhang analysis.
 - The K11 model is approximate. Port positions come from photos. The case does not touch the front or rear faces, so this does not affect the printed parts.
 - With 15 mm fans and a very thin K11 body, the plates overhang the holders by a few millimetres.
 - Fans on USB run at full speed (no PWM control).

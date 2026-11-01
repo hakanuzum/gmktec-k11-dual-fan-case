@@ -18,7 +18,7 @@ const INFO_HOLDER = (side) => ({
     ['Size', '142 × 139 × 34 mm'],
     ['Print', 'Grille face on the bed, no supports'],
   ],
-  text: `Presses a 120 mm fan against the open side of the K11. Hollow to save filament: 2.4 mm outer shell, 2.4 mm grille face and a 2.4 mm frame the K11 rests on. The only solid parts are four corner blocks; each has a hex pocket for an M3 nut, pushed in from the fan opening before the fan goes in (the fan frame then keeps the nuts from falling out). The face has a centre cap over the fan hub and a ring of 48 radial fins. The fan is fixed to the face with its own 4 screws. A 6 mm collar exists only at the four corners: it grips the K11 by its corners and never touches the front or rear ports. The fan cable leaves through a 13 × 7.5 mm USB-C-shaped hole low on the rear wall; a 4-pin fan plug fits through it.`,
+  text: `Presses a 120 mm fan against the open side of the K11. Hollow to save filament: 2.4 mm outer shell, 2.4 mm grille face and a 2.4 mm frame the K11 rests on. The only solid parts are four corner blocks; each has a hex pocket for an M3 nut, pushed in from the fan opening before the fan goes in (the fan frame then keeps the nuts from falling out). The cavity roof under the seat frame slopes at 45°, so the frame prints without supports. The face has a centre cap over the fan hub and a ring of 48 radial fins. The fan is fixed to the face with its own 4 screws. A 6 mm collar exists only at the four corners: it grips the K11 by its corners and never touches the front or rear ports. The fan cable leaves through a 13 × 7.5 mm USB-C-shaped hole low on the rear wall; a 4-pin fan plug fits through it.`,
 });
 const INFO_FAN = (side) => ({
   title: `Fan · ${side === 'left' ? 'left (CPU side)' : 'right (RAM/SSD side)'}`,
@@ -36,23 +36,17 @@ const GROUPS = [
     meshes: [['holder_left', 'shell']], info: INFO_HOLDER('left') },
   { id: 'holder_right', name: 'Fan holder · right', tag: 'PRINT ×1', print: true, dot: 'shell', pc: '#2aa198', t: 1, ex: [1, 0, 0],
     meshes: [['holder_right', 'shell']], info: INFO_HOLDER('right') },
-  { id: 'top', name: 'Top plate', tag: 'PRINT ×1', print: true, dot: 'shell', pc: '#e0a030', ex: [0, 0, 1.2],
+  { id: 'top', name: 'Top plate + handles', tag: 'PRINT ×1', print: true, dot: 'shell', pc: '#e0a030', ex: [0, 0, 1.2],
     meshes: [['top_plate', 'shell']], info: {
-      title: 'Top plate',
-      rows: [['Qty', '1'], ['File', '<code>stl/top_plate.stl</code>'], ['Size', '86 × 139 × 7 mm'], ['Print', 'Flat side on the bed, no supports']],
-      text: 'Ties the two holders together at the top. Seven vent slots sit right above the K11 top vents with an 8 mm air gap below; with both fans blowing in, this is one of the main hot-air exits. The four screw channels are slotted, which is why the case closes without knowing the K11 thickness. The handle posts come out of the four oval bosses; the handle flanges are clamped in the pockets underneath.',
+      title: 'Top plate with handles',
+      rows: [['Qty', '1 (handles included)'], ['File', '<code>stl/top_plate.stl</code>'], ['Size', '86 × 139 × 31 mm'], ['Handle opening', '70 × 22 mm, for four fingers'], ['Print', 'Flat side on the bed, handles standing up, no supports']],
+      text: 'Ties the two holders together at the top. Seven vent slots sit right above the K11 top vents with an 8 mm air gap below; with both fans blowing in, this is one of the main hot-air exits. The four screw channels are slotted, which is why the case closes without knowing the K11 thickness. The two carry handles are part of the plate. Their opening narrows at 45° towards the top with a short 40 mm flat bridge in the middle, so they print upright without supports.',
     } },
   { id: 'bottom', name: 'Bottom plate (feet)', tag: 'PRINT ×1', print: true, dot: 'shell', pc: '#8a63d2', ex: [0, 0, -0.7],
     meshes: [['bottom_plate', 'shell']], info: {
       title: 'Bottom plate',
       rows: [['Qty', '1'], ['File', '<code>stl/bottom_plate.stl</code>'], ['Size', '86 × 140 × 13 mm (with feet)'], ['Print', 'Flat side on the bed, feet up']],
       text: 'Ties the holders together at the bottom and stands the case on 10 mm pedestal feet. The feet flare out at 45°, so they print without supports. The screws go in from below and are hidden.',
-    } },
-  { id: 'handles', name: 'Handles', tag: 'PRINT ×2', print: true, dot: 'shell', pc: '#d1495b', ex: [0, 0, 1.6],
-    meshes: [['handle_front', 'shell'], ['handle_rear', 'shell']], info: {
-      title: 'Handles',
-      rows: [['Qty', '2 (optional)'], ['File', '<code>stl/handle.stl</code>'], ['Size', '78 × 39 × 8 mm, 12 × 8 mm oval tube'], ['Screws', 'None'], ['Print', 'Lying flat, no supports']],
-      text: 'Screwless. The flange at the foot of each post is clamped between the pocket under the top plate and the top of the holder when the plate is screwed down. Order: put the handles on the holders, lower the top plate over the posts, tighten the plate screws. Printed separately and lying flat so the layers run along the tube and do not split when you lift the case.',
     } },
   { id: 'screws', name: 'Screws and nuts', tag: 'BUY', dot: 'screw',
     meshes: [['v_screws_top_right', 'screw', { ex: [0, 0, 1.75], t: 1, label: 'Plate screw M3×10 → threads into an M3 nut in the holder' }], ['v_screws_top_left', 'screw', { ex: [0, 0, 1.75], t: -1, label: 'Plate screw M3×10 → threads into an M3 nut in the holder' }],
@@ -62,7 +56,7 @@ const GROUPS = [
              ['v_anchors_bottom_right', 'nut', { ex: [1, 0, 0.45], t: 1, label: 'M3 nut → sits in a hex pocket of the holder' }], ['v_anchors_bottom_left', 'nut', { ex: [-1, 0, 0.45], t: -1, label: 'M3 nut → sits in a hex pocket of the holder' }]],
     info: {
       title: 'Screws and nuts',
-      rows: [['Plates', '8 × M3×10 countersunk hex socket (DIN 7991), black'], ['Nuts', '8 × M3 hex nut (DIN 934)'], ['Washers', 'Not needed'], ['Fans', '8 fan screws, supplied with the fans'], ['Handles', 'No screws'], ['Tools', '2 mm hex key + Phillips screwdriver']],
+      rows: [['Plates', '8 × M3×10 countersunk hex socket (DIN 7991), black'], ['Nuts', '8 × M3 hex nut (DIN 934)'], ['Washers', 'Not needed'], ['Fans', '8 fan screws, supplied with the fans'], ['Handles', 'Part of the top plate'], ['Tools', '2 mm hex key + Phillips screwdriver']],
       note: 'All bought metal parts, nothing printed. The screw threads into a metal nut, so it can be undone and tightened again as often as you like. Prefer heat-set inserts? Print the holders from stl/heat-set-insert/.',
       text: 'Each fan holder has four hex pockets. Push an M3 nut into each pocket through the fan opening before you fit the fan; the fan frame then stops the nuts from falling out and the hex shape stops them from turning. The slotted channels in the plates are countersunk along their full length, so the screw head sits flush wherever it lands; no washers. Press the holders lightly against the K11 and tighten with a 2 mm hex key.',
     } },

@@ -2,7 +2,7 @@
 
 [← Back to README](../README.md)
 
-You need: the 6 printed parts, 2 fans with their screws, 8 × M3×10 DIN 7991 screws, 8 × M3 hex nuts, the USB cable(s), a 2 mm hex key and a Phillips screwdriver.
+You need: the 4 printed parts (two fan holders, the top plate with its handles and the bottom plate), 2 fans with their screws, 8 × M3×10 DIN 7991 screws, 8 × M3 hex nuts, the USB cable(s), a 2 mm hex key and a Phillips screwdriver.
 
 Tip: the [live viewer](https://hakanuzum.github.io/gmktec-k11-dual-fan-case/viewer/) has a **Show how it fits together** button: exploded, colour-coded, see-through, with the nuts sliding out of their pockets.
 
@@ -39,18 +39,15 @@ Using the heat-set-insert holders instead: melt one insert into each of the four
 1. Stand the K11 on its side, ports facing front and back. A vented side faces the desk.
 2. Fit a holder on each open face. The collars wrap the four corners of the K11.
 
-## 5. Top: handles and top plate
+## 5. Top plate
 
-The handles have no screws. Each post ends in a small flange that is wider than the hole in the top plate. The handle stands on the two holders, the plate goes over the posts, and when the plate is screwed down the flange is trapped between the plate and the holder, like a nail head under a board.
+The two carry handles are part of the top plate; there is nothing to attach.
 
-| Order: holders, handle, top plate | Section: flange trapped under the plate |
-|---|---|
-| ![Handle between holders and top plate](images/handle-mount-exploded.png) | ![Section through a handle post](images/handle-mount-section.png) |
+![Top plate with its handles](images/top-plate.png)
 
-1. Stand the two handles on top of the holders, flanges down, one at the front and one at the back. Each handle bridges both holders: one post on the left holder, one on the right.
-2. Lower the top plate over the four handle posts. The flanges drop into the pockets under the plate.
-3. Press both holders lightly against the K11 so the fans touch its faces.
-4. Drive the 4 top screws with the 2 mm hex key into the nuts. The channels are slotted, so the screws find their nuts whatever the K11 thickness. Stop as soon as the heads sit flush.
+1. Press both holders lightly against the K11 so the fans touch its faces.
+2. Put the top plate on the holders, handles up, with the vent slots over the K11.
+3. Drive the 4 top screws with the 2 mm hex key into the nuts. The channels are slotted, so the screws find their nuts whatever the K11 thickness. Stop as soon as the heads sit flush.
 
 ## 6. Bottom plate
 

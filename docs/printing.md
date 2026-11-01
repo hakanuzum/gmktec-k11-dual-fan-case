@@ -8,17 +8,16 @@
 |---|---|---|---|---|
 | Fan holder, right | `stl/fan_holder_right.stl` | 1 | 142 × 139 × 34 | Grille face on the bed |
 | Fan holder, left | `stl/fan_holder_left.stl` | 1 | 142 × 139 × 34 | Grille face on the bed |
-| Top plate | `stl/top_plate.stl` | 1 | 86 × 139 × 7 | Flat side on the bed, bosses up |
+| Top plate with handles | `stl/top_plate.stl` | 1 | 86 × 139 × 31 | Flat side on the bed, handles standing up |
 | Bottom plate | `stl/bottom_plate.stl` | 1 | 86 × 140 × 13 | Flat side on the bed, feet up |
-| Handle | `stl/handle.stl` | 2 | 78 × 39 × 8 | Lying flat |
 
-The STL files are already in print orientation. Do not auto-orient them. For heat-set inserts, print the holders from `stl/heat-set-insert/` instead (same names); the plates and handles do not change. Left and right holders are mirror images; they are not interchangeable, because the cable hole has to end up low at the rear on both sides.
+The STL files are already in print orientation. Do not auto-orient them. For heat-set inserts, print the holders from `stl/heat-set-insert/` instead (same names); the plates do not change. Left and right holders are mirror images; they are not interchangeable, because the cable hole has to end up low at the rear on both sides.
 
 ## Material
 
 **PETG.** The K11 blows warm air out of its rear and the case sits close to it; PLA starts to soften around 55–60 °C. A matte PETG hides layer lines best. ASA also works if your printer has an enclosure.
 
-Filament use is roughly 250–320 g for all parts, depending on walls and infill.
+Filament use is roughly 280–340 g for all parts, depending on walls and infill.
 
 ## Settings for a clean surface
 
@@ -34,13 +33,23 @@ These are written for a 0.4 mm nozzle and work in Bambu Studio, OrcaSlicer, Prus
 | Ironing | On, top surfaces only | Smooth top of the top plate and handles. |
 | Seam position | Back (rear), scarf seam on if available | The STL "back" is the case's rear, so the seam ends up next to the cables. |
 | Infill | 15–20 %, gyroid | Only the screw blocks and feet have infill. |
-| Supports | Off | Nothing needs them. Bridges in the holder seat frame are 6–8 mm. |
+| Supports | Off | Nothing needs them (checked layer by layer, see below). |
 | Outer wall speed | 40–60 mm/s | Slower outer walls give a cleaner, more even surface. |
 | Outer wall acceleration | ≤ 3000 mm/s² (Bambu/Orca) | Less ringing next to corners and the cable hole. |
 | Travel | Avoid crossing walls on; Z-hop 0.4 mm on travel | PETG tends to drag and scratch top surfaces without it. |
 | Elephant-foot compensation | 0.1–0.15 mm | Keeps the first-layer grille fins crisp. |
 | Nozzle / bed (PETG) | 235–245 °C / 70–80 °C | Follow your filament's label. |
-| Part cooling (PETG) | 30–50 %, 100 % for bridges | Strong enough for the seat-frame bridges without weak layers. |
+| Part cooling (PETG) | 30–50 %, 100 % for bridges | Clean bridges under the handle bars without weakening the layers. |
+
+### Overhangs and bridges
+
+`tools/check_geometry.py` slices every part in 0.2 mm layers and looks for anything that does not stand on the layer below (45° is allowed). What is left:
+
+| Part | Unsupported | How it prints |
+|---|---|---|
+| Top plate | The flat underside of each handle bar, 40 mm long | A bridge. The rest of the handle opening slopes at 45°. Keep the slicer's bridge settings on (bridge speed ~25 mm/s, fan 100 %). |
+| Fan holders | The roof of each nut pocket, 3.3 mm | A short bridge. The cavity under the seat frame slopes at 45°, so the frame needs nothing below it. |
+| Bottom plate | Nothing | The feet flare out at 45°. |
 
 ### Tips
 
