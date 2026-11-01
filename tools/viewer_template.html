@@ -1,0 +1,301 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>K11 Dual-Fan Case</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root {
+  /* Layout: workbench — 3D stage on the left, part sheet on the right */
+  --bg: #e8ebee;
+  --panel: #f6f7f8;
+  --stage: #dce1e6;
+  --ink: #1a1f25;
+  --muted: #59626c;
+  --line: #ccd2d9;
+  --chip: #e0e5ea;
+  --accent: #2b50cc;
+  --accent-ink: #ffffff;
+  --intake: #1590c2;
+  --exhaust: #d9561f;
+  --ok: #24804a;
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111418; --panel: #171b20; --stage: #1b2026; --ink: #e3e7eb; --muted: #97a1ac;
+    --line: #2a3139; --chip: #222830; --accent: #7f98ff; --accent-ink: #0d1020;
+    --intake: #3ab5e2; --exhaust: #ff8a4f; --ok: #5ccf8a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111418; --panel: #171b20; --stage: #1b2026; --ink: #e3e7eb; --muted: #97a1ac;
+  --line: #2a3139; --chip: #222830; --accent: #7f98ff; --accent-ink: #0d1020;
+  --intake: #3ab5e2; --exhaust: #ff8a4f; --ok: #5ccf8a; color-scheme: dark;
+}
+
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg); color: var(--ink);
+  font: 14px/1.5 var(--f-body);
+  -webkit-font-smoothing: antialiased;
+}
+.app {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 372px;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.topbar {
+  grid-column: 1 / -1;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px;
+  padding-block: 12px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+.topbar h1 {
+  margin: 0; font: 750 22px/1.1 var(--f-display); font-stretch: 112%;
+  letter-spacing: -0.01em; text-wrap: balance;
+}
+.topbar .sub { color: var(--muted); font-size: 13px; }
+.dims {
+  margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap;
+  font: 500 12.5px/1 var(--f-mono); font-variant-numeric: tabular-nums;
+}
+.dims span { background: var(--chip); padding: 6px 8px; border-radius: 4px; white-space: nowrap; }
+.dims b { font-weight: 500; color: var(--muted); margin-right: 4px; }
+
+.stage { position: relative; min-width: 0; min-height: 0; background: var(--stage); }
+.stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.overlay { position: absolute; pointer-events: none; font-size: 12.5px; }
+.hint { left: 14px; bottom: 12px; color: var(--muted); max-width: calc(100% - 28px); }
+.legend {
+  left: 14px; top: 12px; display: flex; flex-direction: column; gap: 4px;
+  background: color-mix(in srgb, var(--panel) 88%, transparent); border: 1px solid var(--line);
+  border-radius: 6px; padding: 8px 10px; max-width: min(330px, calc(100% - 28px));
+}
+.legend .row { display: flex; align-items: center; gap: 8px; }
+.legend .sw { width: 18px; height: 4px; border-radius: 2px; flex: none; }
+.legend p { margin: 4px 0 0; color: var(--muted); line-height: 1.4; }
+.tip {
+  background: var(--ink); color: var(--bg); padding: 4px 8px; border-radius: 4px;
+  font-weight: 500; white-space: nowrap; transform: translate(12px, 12px);
+}
+
+aside {
+  min-width: 0; min-height: 0; overflow-y: auto;
+  background: var(--panel); border-left: 1px solid var(--line);
+  padding-block: 4px 24px;
+  padding-left: 18px;
+  padding-right: max(18px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column;
+}
+section { padding-block: 14px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+section:last-child { border-bottom: 0; }
+h2 {
+  margin: 0; font: 650 11.5px/1 var(--f-display); font-stretch: 118%;
+  text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted);
+}
+.seg { display: flex; flex-wrap: wrap; gap: 4px; }
+button {
+  font: 500 13px/1 var(--f-body); color: var(--ink); background: var(--chip);
+  border: 1px solid transparent; border-radius: 5px; padding: 7px 10px; cursor: pointer;
+}
+button:hover { border-color: var(--line); }
+button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.slider { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; }
+.slider label { font-weight: 500; }
+.slider output { font: 500 13px/1 var(--f-mono); font-variant-numeric: tabular-nums; }
+.slider input { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); margin: 0; }
+.note { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+.gauge { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; font: 12px/1 var(--f-mono); color: var(--muted); }
+.gauge .track { position: relative; height: 10px; border-radius: 5px; background: var(--chip); border: 1px solid var(--line); }
+.gauge .knob { position: absolute; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); transform: translate(-50%, -50%); }
+.toggles { display: flex; flex-direction: column; gap: 6px; }
+.toggles label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.toggles input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+.swatches { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.swatches .lbl { color: var(--muted); font-size: 12.5px; min-width: 40px; }
+.swatches button { display: flex; align-items: center; gap: 6px; }
+.swatches i { width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--line); display: inline-block; }
+.hw-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); }
+.hw-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.hw-legend i { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+button.primary { background: var(--accent); color: var(--accent-ink); font-weight: 600; padding: 9px 12px; align-self: flex-start; }
+button.primary:hover { filter: brightness(1.08); }
+
+.parts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.parts li { display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: 8px; padding: 3px 4px; border-radius: 5px; }
+.parts li.sel { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.parts input { accent-color: var(--accent); margin: 0; width: 15px; height: 15px; }
+.parts .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--line); }
+.parts .pick { background: none; padding: 4px 0; text-align: left; border: 0; font-weight: 500; line-height: 1.25; }
+.parts .pick:hover { color: var(--accent); }
+.tag { font: 500 11px/1 var(--f-mono); padding: 4px 6px; border-radius: 3px; background: var(--chip); color: var(--muted); white-space: nowrap; }
+.tag.print { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+
+.card { border: 1px solid var(--line); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px; background: var(--bg); }
+.card h3 { margin: 0; font: 700 17px/1.2 var(--f-display); font-stretch: 108%; }
+.card dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 13px; }
+.card dt { color: var(--muted); }
+.card dd { margin: 0; min-width: 0; }
+.card dd code, .mono { font: 12.5px var(--f-mono); }
+.card p { margin: 0; line-height: 1.5; }
+.card .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.empty { color: var(--muted); font-size: 13px; margin: 0; }
+
+.buy { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+.buy li::marker { color: var(--muted); }
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; color: var(--muted); }
+.check b { color: var(--ok); font-weight: 600; }
+.foot { font-size: 12px; color: var(--muted); line-height: 1.45; margin: 0; }
+.foot a { color: var(--accent); }
+.loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); }
+
+@media (max-width: 860px) {
+  html, body { height: auto; }
+  .app { height: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; }
+  .stage { height: 62vh; min-height: 340px; }
+  aside { border-left: 0; border-top: 1px solid var(--line); overflow: visible; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .dims { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="app">
+  <header class="topbar">
+    <h1>K11 Dual-Fan Case</h1>
+    <span class="sub">GMKtec K11 · 2 × 120 mm USB fans · no soldering · 2 mm hex key + Phillips screwdriver</span>
+    <div class="dims" aria-label="Outer dimensions">
+      <span><b>W</b><span id="dimW">100.0</span> mm</span>
+      <span title="With handles; 158.0 mm without"><b>H</b>194.0 mm</span>
+      <span><b>D</b>139.0 mm</span>
+    </div>
+  </header>
+
+  <div class="stage" id="stage">
+    <div class="loading" id="loading">Loading 3D model…</div>
+    <div class="overlay legend" id="legend" hidden>
+      <div class="row"><span class="sw" style="background: var(--intake)"></span>Cool air in</div>
+      <div class="row"><span class="sw" style="background: var(--exhaust)"></span>Warm air out</div>
+      <p id="airText"></p>
+    </div>
+    <div class="overlay hint">Drag: rotate · Right-drag / two fingers: pan · Wheel: zoom · Click: select a part</div>
+    <div class="overlay tip" id="tip" hidden></div>
+  </div>
+
+  <aside>
+    <section aria-labelledby="h-view">
+      <h2 id="h-view">View</h2>
+      <div class="seg" id="views">
+        <button type="button" data-view="iso" aria-pressed="true">Isometric</button>
+        <button type="button" data-view="front" aria-pressed="false">Front</button>
+        <button type="button" data-view="rear" aria-pressed="false">Rear</button>
+        <button type="button" data-view="top" aria-pressed="false">Top</button>
+        <button type="button" data-view="left" aria-pressed="false">Left</button>
+        <button type="button" data-view="right" aria-pressed="false">Right</button>
+      </div>
+      <button type="button" id="howFits" class="primary">Show how it fits together</button>
+      <div class="slider">
+        <label for="explode">Explode</label><output id="explodeOut" for="explode">0 mm</output>
+        <input type="range" id="explode" min="0" max="80" step="1" value="0">
+      </div>
+    </section>
+
+    <section aria-labelledby="h-thick">
+      <h2 id="h-thick">K11 thickness</h2>
+      <div class="slider">
+        <label for="thick">Body with covers removed</label><output id="thickOut" for="thick">44.0 mm</output>
+        <input type="range" id="thick" min="32" max="56" step="0.5" value="44">
+      </div>
+      <div class="gauge" aria-hidden="true"><span>32</span><div class="track"><div class="knob" id="knob"></div></div><span>56</span></div>
+      <p class="note">The body thickness is not published and you do not need to measure it. The screw channels in the plates are slotted: press the holders against the K11 and tighten, any thickness from 32 to 56 mm fits. Move the slider to watch the screws slide along the channels.</p>
+    </section>
+
+    <section aria-labelledby="h-cut">
+      <h2 id="h-cut">Section and layers</h2>
+      <div class="seg" id="clipModes">
+        <button type="button" data-clip="off" aria-pressed="true">No section</button>
+        <button type="button" data-clip="y" aria-pressed="false">Cut front</button>
+        <button type="button" data-clip="x" aria-pressed="false">Cut side</button>
+      </div>
+      <div class="slider" id="clipSlider" hidden>
+        <label for="clipPos">Section position</label><output id="clipOut" for="clipPos">0 mm</output>
+        <input type="range" id="clipPos" min="-70" max="70" step="1" value="0">
+      </div>
+      <div class="toggles">
+        <label><input type="checkbox" id="tAir"> Show airflow</label>
+        <div class="seg" id="airModes" hidden>
+          <button type="button" data-air="both" aria-pressed="true">Both fans in</button>
+          <button type="button" data-air="mixed" aria-pressed="false">CPU in, RAM out</button>
+        </div>
+        <label><input type="checkbox" id="tDevice" checked> Show K11 and fans</label>
+        <label><input type="checkbox" id="tByPart"> Colour by part</label>
+        <label><input type="checkbox" id="tXray"> See-through case</label>
+        <label><input type="checkbox" id="tEdges" checked> Part edges</label>
+      </div>
+      <div class="hw-legend" id="hwLegend" hidden>
+        <span><i style="background:#f5c518"></i>Plate screws</span>
+        <span><i style="background:#19c3e6"></i>M3 nuts</span>
+        <span><i style="background:#ff7a1a"></i>Fan screws</span>
+      </div>
+      <div class="swatches" id="shellColors">
+        <span class="lbl">Case</span>
+        <button type="button" data-shell="black" aria-pressed="true"><i style="background:#2b2d31"></i>Black</button>
+        <button type="button" data-shell="grey" aria-pressed="false"><i style="background:#5a5d63"></i>Space grey</button>
+        <button type="button" data-shell="white" aria-pressed="false"><i style="background:#f1f0ec"></i>White</button>
+      </div>
+      <div class="swatches" id="fanColors">
+        <span class="lbl">Fan</span>
+        <button type="button" data-fan="noctua" aria-pressed="true"><i style="background:#dcc7a6"></i>Noctua</button>
+        <button type="button" data-fan="arctic" aria-pressed="false"><i style="background:#202124"></i>Arctic</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-parts">
+      <h2 id="h-parts">Parts</h2>
+      <ul class="parts" id="parts"></ul>
+      <div class="card" id="info" hidden></div>
+      <p class="empty" id="infoEmpty">Click a part in the list or in the model to see what it does.</p>
+    </section>
+
+    <section aria-labelledby="h-buy">
+      <h2 id="h-buy">What to buy</h2>
+      <ul class="buy">
+        <li>2 × 120 mm fans, 25 mm thick. Example: Noctua NF-F12 PWM (12 V, 4-pin). Any standard 120 mm fan fits; the hole spacing is always 105 mm.</li>
+        <li>USB 5 V→12 V step-up fan cable (USB-A male → 4-pin fan, e.g. Akasa AK-CBFA10-60BK). It must say "5V→12V" or "step-up"; a plain USB fan cable gives 5 V and will not spin a 12 V fan. An NF-F12 draws at most 0.05 A; the Y-cable in the fan box lets two fans share one cable.</li>
+        <li>8 × M3×10 countersunk hex socket screws (DIN 7991), black. No washers; tightened with a 2 mm hex key. The handles need no screws.</li>
+        <li>Black PETG filament. PLA can soften in the warm air leaving the rear.</li>
+      </ul>
+      <p class="note">USB carries no PWM signal, so the fan runs at full speed (NF-F12: 1500 rpm, 22.4 dB(A)). For less noise, put the Low-Noise Adaptor (L.N.A.) from the fan box in line.</p>
+    </section>
+
+    <section aria-labelledby="h-check">
+      <h2 id="h-check">Automated checks</h2>
+      <div class="check"><b>✓</b><span>At a K11 thickness of 32, 44 and 56 mm: no case part or handle intersects the K11 body or the fans; the front and rear port zones are completely clear.</span></div>
+      <div class="check"><b>✓</b><span>All 8 countersunk plate screws and 8 fan screws line up with their holes at every thickness; the handle flanges sit on the holders.</span></div>
+      <div class="check"><b>✓</b><span>The same checks pass with the 15 mm slim-fan setting.</span></div>
+      <div class="check"><b>✓</b><span>Every printed part is a single watertight solid; the largest is 142 × 139 × 34 mm and fits a 180 mm bed.</span></div>
+      <p class="foot">Collar and fan-pocket dimensions come from <a href="https://github.com/orenaksakal/gmktec-k11-noctua-mod" target="_blank" rel="noopener">orenaksakal/gmktec-k11-noctua-mod</a>, where they were fit-tested on a real K11. The K11 is a stand-in model; port positions are approximate. Source: <a href="https://github.com/hakanuzum/gmktec-k11-dual-fan-case" target="_blank" rel="noopener">github.com/hakanuzum/gmktec-k11-dual-fan-case</a></p>
+    </section>
+  </aside>
+</div>
+
+<script>/*__MESH_DATA__*/</script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+/*__APP_JS__*/
+</script>
